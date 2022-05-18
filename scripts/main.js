@@ -24,6 +24,8 @@ let stars;
 let score = 0;
 let scoretext = '';
 let bombs;
+let weapon1;
+
 
 function preload() {
     this.load.image('sky', 'assets/sky.png');
@@ -33,6 +35,7 @@ function preload() {
     this.load.spritesheet('dude', 'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
+    this.load.image('ninjaWeapon', 'assets/Ninja weapon.png');
 }
 
 function create() {
@@ -149,3 +152,4 @@ function hitBomb(player, bomb) {
 
     gameOver = true;
 }
+
