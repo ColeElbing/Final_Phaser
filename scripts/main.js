@@ -19,12 +19,15 @@ let config = {
 let game = new Phaser.Game(config);
 let platforms;
 let player;
+let mouse;
 let cursors;
+let spaceKey;
 let stars;
 let score = 0;
 let scoretext = '';
 let bombs;
 let weapon1;
+
 
 
 function preload() {
@@ -35,7 +38,7 @@ function preload() {
     this.load.spritesheet('dude', 'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
-    this.load.image('ninjaWeapon', 'assets/Ninja weapon.png');
+    this.load.image('weapon1', 'assets/Ninja weapon.png');
 }
 
 function create() {
@@ -48,6 +51,8 @@ function create() {
     platforms.create(600, 400, 'ground');
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
+
+    this.input.setDefaultCursor('url(assets/blue.cur) , pointer');
 
     player = this.physics.add.sprite(100, 450, 'dude');
 
@@ -77,6 +82,7 @@ function create() {
     this.physics.add.collider(player, platforms);
 
     cursors = this.input.keyboard.createCursorKeys();
+
 
     stars = this.physics.add.group({
         key: 'star',
@@ -119,6 +125,12 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-330);
     }
+
+    if (cursors.space.isDown){ 
+        createWeapon1();
+    }
+
+
 }
 
 function collectStar(player, star) {
@@ -153,3 +165,12 @@ function hitBomb(player, bomb) {
     gameOver = true;
 }
 
+function createWeapon1(player ,weapon1){
+
+    let ninjaWeapon = weapon1.create(player.x, player.y, 'weapon1');
+
+    ninjaWeapon.setVelocityX(160);
+
+    ninjaWeapon.setCollideWorldBounds(true);
+
+}
