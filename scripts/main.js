@@ -22,11 +22,9 @@ let player;
 let mouse;
 let cursors;
 let spaceKey;
-let stars;
 let score = 0;
 let scoretext = '';
-let bombs;
-let weapon1;
+let weapon;
 
 
 
@@ -38,7 +36,7 @@ function preload() {
     this.load.spritesheet('dude', 'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
-    this.load.image('weapon1', 'assets/Ninja weapon.png');
+    this.load.image('weapon', 'assets/Ninja weapon.png');
 }
 
 function create() {
@@ -54,10 +52,14 @@ function create() {
 
     this.input.setDefaultCursor('url(assets/blue.cur) , pointer');
 
+    weapon = this.physics.add.sprite(100, 450, 'weapon');
     player = this.physics.add.sprite(100, 450, 'dude');
+
 
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
+
+    weapon.setCollideWorldBounds(true);
 
     this.anims.create({
         key: 'left',
@@ -80,29 +82,11 @@ function create() {
     });
 
     this.physics.add.collider(player, platforms);
+    this.physics.add.collider(weapon, platforms);
 
     cursors = this.input.keyboard.createCursorKeys();
-
-
-    stars = this.physics.add.group({
-        key: 'star',
-        repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 70 }
-    });
-
-    stars.children.iterate(function (child) {
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    });
-
-    this.physics.add.collider(stars, platforms);
-
-    this.physics.add.overlap(player, stars, collectStar, null, this);
-
-    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
-    bombs = this.physics.add.group();
-    this.physics.add.collider(bombs, platforms);
-    this.physics.add.collider(player, bombs, hitBomb, null, this);
+           
+    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });       
 }
 
 function update() {
@@ -126,51 +110,28 @@ function update() {
         player.setVelocityY(-330);
     }
 
+    if (cursors.left.isDown) {
+        weapon.setVelocityX(-160);
+    }
+
+    else if (cursors.right.isDown) {
+        weapon.setVelocityX(160);
+    }
+
+    else{
+        weapon.setVelocityX(0);
+    }
+
+    if(cursors.up.isDown && weapon.body.touching.down){
+        weapon.setVelocityY(-330);
+    }
+
     if (cursors.space.isDown){ 
-        createWeapon1();
-    }
-
-
-}
-
-function collectStar(player, star) {
-    star.disableBody(true, true);
-
-    score += 10;
-    scoreText.setText('Score: ' + score);
-
-    if (stars.countActive(true) === 0) {
-        stars.children.iterate(function (child) {
-            child.enableBody(true, child.x, 0, true, true);
-        });
-
-        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-        var bomb = bombs.create(x, 16, 'bomb');
-        bomb.setBounce(1);
-        bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
-    }
-}
-
-function hitBomb(player, bomb) {
-
-    this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    player.anims.play('turn');
-
-    gameOver = true;
-}
-
-function createWeapon1(player ,weapon1){
-
-    let ninjaWeapon = weapon1.create(player.x, player.y, 'weapon1');
-
-    ninjaWeapon.setVelocityX(160);
-
-    ninjaWeapon.setCollideWorldBounds(true);
+        weapon.setVelocityX(260);
+    } 
 
 }
+
+
+
+
