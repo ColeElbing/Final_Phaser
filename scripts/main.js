@@ -28,6 +28,12 @@ let spaceKey;
 let score = 0;
 let scoretext = '';
 let weapon;
+let speed;
+var stats;
+var lastFired = 0;
+var isDown = false;
+var mouseX = 0;
+var mouseY = 0;
 
 
 
@@ -55,14 +61,12 @@ function create() {
 
     this.input.setDefaultCursor('url(assets/blue.cur) , pointer');
 
-    weapon = this.physics.add.sprite(100, 450, 'weapon');
+    weapon = this.physics.add.sprite(-192, -4242, 'weapon');
     player = this.physics.add.sprite(100, 450, 'dude');
 
 
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
-
-    weapon.setCollideWorldBounds(true);
 
     this.anims.create({
         key: 'left',
@@ -87,18 +91,105 @@ function create() {
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(weapon, platforms);
 
+    //weapon throwing code
+    var Bullet = new Phaser.Class({
+
+        Extends: Phaser.GameObjects.Image,
+
+        initialize:
+
+        function Bullet (scene)
+        {
+            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'weapon');
+
+            this.incX = 0;
+            this.incY = 0;
+            this.lifespan = 0;
+
+            this.speed = Phaser.Math.GetSpeed(600, 1);
+        },
+
+        fire: function (x, y)
+        {
+            this.setActive(true);
+            this.setVisible(true);
+
+            //  Bullets fire from the middle of the screen to the given x/y
+            this.setPosition(player.x, player.y);
+
+            var angle = Phaser.Math.Angle.Between(x, y, player.x, player.y);
+
+            this.setRotation(angle);
+
+            this.incX = Math.cos(angle);
+            this.incY = Math.sin(angle);
+
+            this.lifespan = 1000;
+        },
+
+        update: function (time, delta)
+        {
+            this.lifespan -= delta;
+
+            this.x -= this.incX * (this.speed * delta);
+            this.y -= this.incY * (this.speed * delta);
+
+            if (this.lifespan <= 0)
+            {
+                this.setActive(false);
+                this.setVisible(false);
+            }
+        }
+
+    });
+
+    bullets = this.add.group({
+        classType: Bullet,
+        maxSize: 10,
+        runChildUpdate: true
+    });
+
+    this.input.on('pointerdown', function (pointer) {
+
+        isDown = true;
+        mouseX = pointer.x;
+        mouseY = pointer.y;
+
+    });
+
+    this.input.on('pointermove', function (pointer) {
+
+        mouseX = pointer.x;
+        mouseY = pointer.y;
+
+    });
+
+    this.input.on('pointerup', function (pointer) {
+
+        isDown = false;
+
+    });
+
     cursors = this.input.keyboard.createCursorKeys();
+
+    keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
            
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });       
+
 }
 
-function update() {
-    if (cursors.left.isDown) {
+function update(time, delta) {
+    //Player movement and animations
+
+    if (keyA.isDown) {
         player.setVelocityX(-160);
 
         player.anims.play('left', true);
     }
-    else if (cursors.right.isDown) {
+    else if (keyD.isDown) {
         player.setVelocityX(160);
 
         player.anims.play('right', true);
@@ -109,29 +200,23 @@ function update() {
         player.anims.play('turn');
     }
 
-    if (cursors.up.isDown && player.body.touching.down) {
+    if (cursors.space.isDown && player.body.touching.down) {
         player.setVelocityY(-330);
     }
 
-    if (cursors.left.isDown) {
-        weapon.setVelocityX(-160);
+// Weapon creation and firing
+    if (isDown && time > lastFired)
+    {
+        weapon = bullets.get();
+
+        if (weapon)
+        {
+            weapon.fire(mouseX, mouseY);
+
+            lastFired = time + 50;
+        }
     }
 
-    else if (cursors.right.isDown) {
-        weapon.setVelocityX(160);
-    }
-
-    else{
-        weapon.setVelocityX(0);
-    }
-
-    if(cursors.up.isDown && weapon.body.touching.down){
-        weapon.setVelocityY(-330);
-    }
-
-    if (cursors.space.isDown){ 
-        weapon.setVelocityX(260);
-    } 
 
 }
 
