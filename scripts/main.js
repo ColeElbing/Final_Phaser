@@ -1,4 +1,3 @@
-
 let config = {
     type: Phaser.AUTO,
     width: 800,
@@ -42,7 +41,7 @@ function preload() {
     this.load.spritesheet('dude', 'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
-    this.load.image('weapon', 'assets/Ninja weapon.png');
+    this.load.image('weapon', 'assets/bullet.png');
 }
 
 function create() {
@@ -58,7 +57,7 @@ function create() {
 
     this.input.setDefaultCursor('url(assets/blue.cur) , pointer');
 
-    weapon = this.physics.add.sprite(-192, -4242, 'weapon');
+    weapon = this.physics.add.sprite(0, 0, 'weapon');
     player = this.physics.add.sprite(100, 450, 'dude');
 
 
