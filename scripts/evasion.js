@@ -1,4 +1,4 @@
-var config = {
+let config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
@@ -27,12 +27,23 @@ let lastFired = 0;
 let isDown = false;
 let mouseX = 0;
 let mouseY = 0;
+let asteroid1;
+let asteroid2;
+let asteroid3;
+let score = 0;
+let scoreText;
+let health = 100;
+let healthText;
+
 
 function preload(){
     this.load.image('ship1','assets/thrust_ship.png');
     this.load.image('ship2','assets/thrust_ship2.png');
     this.load.image('background','assets/space.jpg');
     this.load.image('bullet', 'assets/bullet1.png')
+    this.load.image('asteroid1','assets/asteroid1.png')
+    this.load.image('asteroid2','assets/asteroid2.png')
+    this.load.image('asteroid3','assets/asteroid3.png')
 }
 
 function create(){
@@ -52,7 +63,12 @@ function create(){
     keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-    
+
+    scoreText = this.add.text(16,16, 'Score: ' + score, {fontsize: '40px', fill: '#FFFFFF'});
+
+    healthText = this.add.text(16,32, 'Health: ' + health, {fontsize: '40px', fill: '#FFFFFF'});
+  
+    /*
     //------------------Bullet firing code------------------
     var Bullet = new Phaser.Class({
 
@@ -67,28 +83,19 @@ function create(){
             this.incX = 0;
             this.incY = 0;
             this.lifespan = 0;
-
-            this.speed = Phaser.Math.GetSpeed(600, 1);
         },
 
-        fire: function (x, y)
-        {
+        fire: function () {
             this.setActive(true);
             this.setVisible(true);
 
             //  Bullets fire from the middle of the screen to the given x/y
             this.setPosition(ship.x, ship.y);
 
-            var angle = Phaser.Math.Angle.Between(x, y, ship.x, ship.y);
-
-            this.setRotation(angle);
-
-            this.incX = Math.cos(angle);
-            this.incY = Math.sin(angle);
-
-            this.lifespan = 1000;
+            this.rotation = ship.rotation;
+            this.physics.arcade.velocityFromRotation(ship.rotation, 400, bullet.body.velocity);
+            lifespan = 1000;
         },
-
         update: function (time, delta)
         {
             this.lifespan -= delta;
@@ -135,6 +142,8 @@ function create(){
         isDown = false;
 
     });
+
+*/
 }
 
 function update(time, delta){
@@ -161,6 +170,12 @@ function update(time, delta){
         ship.setAcceleration(0);
     }
 
+    if(health > 0){
+        score = score + 1;
+        scoreText.setText('Score: ' + score);
+    }
+
+    /*
     if (isDown && time > lastFired)
     {
         bullet = bullets.get();
@@ -172,4 +187,6 @@ function update(time, delta){
             lastFired = time + 50;
         }
     }
+    */
 }
+
