@@ -36,18 +36,18 @@ let health = 100;
 let healthText;
 
 
-function preload(){
-    this.load.image('ship1','assets/thrust_ship.png');
-    this.load.image('ship2','assets/thrust_ship2.png');
-    this.load.image('background','assets/space.jpg');
+function preload() {
+    this.load.image('ship1', 'assets/thrust_ship.png');
+    this.load.image('ship2', 'assets/thrust_ship2.png');
+    this.load.image('background', 'assets/space.jpg');
     this.load.image('bullet', 'assets/bullet1.png')
-    this.load.image('asteroid1','assets/asteroid1.png')
-    this.load.image('asteroid2','assets/asteroid2.png')
-    this.load.image('asteroid3','assets/asteroid3.png')
+    this.load.image('asteroid1', 'assets/asteroid1.png')
+    this.load.image('asteroid2', 'assets/asteroid2.png')
+    this.load.image('asteroid3', 'assets/asteroid3.png')
 }
 
-function create(){
-    bg = this.add.image(400,300, 'background');
+function create() {
+    bg = this.add.image(400, 300, 'background');
     bg.setScale(2);
 
     ship = this.physics.add.sprite(100, 450, 'ship1');
@@ -57,6 +57,12 @@ function create(){
     ship.setMaxVelocity(300);
     ship.setCollideWorldBounds(true);
 
+    asteroid1 = this.physics.add.sprite(100, 200, 'asteroid1');
+    asteroid1.setCollideWorldBounds(true);
+    asteroid1.setScale(3);
+
+    this.physics.add.collider(asteroid1, ship, hitShip, null, this);
+
     cursors = this.input.keyboard.createCursorKeys();
 
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -64,10 +70,10 @@ function create(){
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
-    scoreText = this.add.text(16,16, 'Score: ' + score, {fontsize: '40px', fill: '#FFFFFF'});
+    scoreText = this.add.text(16, 16, 'Score: ' + score, { fontsize: '40px', fill: '#FFFFFF' });
 
-    healthText = this.add.text(16,32, 'Health: ' + health, {fontsize: '40px', fill: '#FFFFFF'});
-  
+    healthText = this.add.text(16, 32, 'Health: ' + health, { fontsize: '40px', fill: '#FFFFFF' });
+
     /*
     //------------------Bullet firing code------------------
     var Bullet = new Phaser.Class({
@@ -146,34 +152,30 @@ function create(){
 */
 }
 
-function update(time, delta){
-    if (keyA.isDown)
-    {
+function update(time, delta) {
+    if (keyA.isDown) {
         ship.setAngularVelocity(-150);
     }
-    else if (keyD.isDown)
-    {
+    else if (keyD.isDown) {
         ship.setAngularVelocity(150);
     }
-    else
-    {
+    else {
         ship.setAngularVelocity(0);
     }
 
-    if (keyW.isDown)
-    {
+    if (keyW.isDown) {
         this.physics.velocityFromRotation(ship.rotation, 600, ship.body.acceleration);
     }
 
-    else
-    {
+    else {
         ship.setAcceleration(0);
     }
 
-    if(health > 0){
-        score = score + 1;
+    if (health > 0) {
+        score = score + 5;
         scoreText.setText('Score: ' + score);
     }
+
 
     /*
     if (isDown && time > lastFired)
@@ -188,5 +190,25 @@ function update(time, delta){
         }
     }
     */
+}
+
+function hitShip (ship, asteroid1)
+{
+    this.physics.pause();
+
+    ship.setTint(0xff0000);
+
+    gameOver = true;
+}
+
+function newAsteroid(){
+    if (score % 10000 == 0) {
+        var x = (ship.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+        var asteroid_first = asteroid1.create(x, 16, 'asteroid1');
+        asteroid_first.setBounce(1);
+        asteroid_first.setCollideWorldBounds(true);
+        asteroid_first.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    }
 }
 
