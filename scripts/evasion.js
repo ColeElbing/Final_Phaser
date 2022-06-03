@@ -52,6 +52,7 @@ function create() {
     bg = this.add.image(400, 300, 'background');
     bg.setScale(2);
 
+    
     ship = this.physics.add.sprite(100, 450, 'ship1');
     ship.setSize(20,20)
     ship.setScale(2);
@@ -74,83 +75,6 @@ function create() {
     scoreText = this.add.text(16, 16, 'Score: ' + score, { fontsize: '40px', fill: '#FFFFFF' });
 
     livesText = this.add.text(16, 32, 'Lives: ' + lives, { fontsize: '40px', fill: '#FFFFFF' });
-
-    /*
-    //------------------Bullet firing code------------------
-    var Bullet = new Phaser.Class({
-
-        Extends: Phaser.GameObjects.Image,
-
-        initialize:
-
-        function Bullet (scene)
-        {
-            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-
-            this.incX = 0;
-            this.incY = 0;
-            this.lifespan = 0;
-        },
-
-        fire: function () {
-            this.setActive(true);
-            this.setVisible(true);
-
-            //  Bullets fire from the middle of the screen to the given x/y
-            this.setPosition(ship.x, ship.y);
-
-            this.rotation = ship.rotation;
-            this.physics.arcade.velocityFromRotation(ship.rotation, 400, bullet.body.velocity);
-            lifespan = 1000;
-        },
-        update: function (time, delta)
-        {
-            this.lifespan -= delta;
-
-            this.x -= this.incX * (this.speed * delta);
-            this.y -= this.incY * (this.speed * delta);
-
-            if (this.lifespan <= 0)
-            {
-                this.setActive(false);
-                this.setVisible(false);
-            }
-        }
-
-    });
-
-    bullets = this.add.group({
-        classType: Bullet,
-        maxSize: 50,
-        runChildUpdate: true
-    });
-
-
-    //------------------End bullet firing code------------------
-
-
-    this.input.on('pointerdown', function (pointer) {
-
-        isDown = true;
-        mouseX = pointer.x;
-        mouseY = pointer.y;
-
-    });
-
-    this.input.on('pointermove', function (pointer) {
-
-        mouseX = pointer.x;
-        mouseY = pointer.y;
-
-    });
-
-    this.input.on('pointerup', function (pointer) {
-
-        isDown = false;
-
-    });
-
-*/
 }
 
 function update(time, delta) {
@@ -201,20 +125,6 @@ function update(time, delta) {
         }
 
     }
-
-    /*
-    if (isDown && time > lastFired)
-    {
-        bullet = bullets.get();
-
-        if (bullet)
-        {
-            bullet.fire(mouseX, mouseY);
-
-            lastFired = time + 50;
-        }
-    }
-    */
 }
 
 function hitShip(ship, asteroid1) {
