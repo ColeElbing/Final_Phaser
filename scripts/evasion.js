@@ -6,13 +6,13 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false
+            debug: true
         }
     },
     scene: {
         preload: preload,
         create: create,
-        update: update
+        update: update 
     }
 };
 
@@ -27,13 +27,13 @@ let lastFired = 0;
 let isDown = false;
 let mouseX = 0;
 let mouseY = 0;
-let asteroid1;
-let asteroid2;
-let asteroid3;
 let score = 0;
 let scoreText;
-let health = 100;
-let healthText;
+let lives = 1;
+let livesText;
+let asteroids;
+let x;
+let y;
 
 
 function preload() {
@@ -51,19 +51,18 @@ function create() {
     bg.setScale(2);
 
     ship = this.physics.add.sprite(100, 450, 'ship1');
+    ship.setSize(20,20)
     ship.setScale(2);
     ship.setDrag(100);
     ship.setAngularDrag(200);
     ship.setMaxVelocity(300);
     ship.setCollideWorldBounds(true);
 
-    asteroid1 = this.physics.add.sprite(100, 200, 'asteroid1');
-    asteroid1.setCollideWorldBounds(true);
-    asteroid1.setScale(3);
-
-    this.physics.add.collider(asteroid1, ship, hitShip, null, this);
-
     cursors = this.input.keyboard.createCursorKeys();
+
+    asteroids = this.physics.add.group();
+    this.physics.add.collider(asteroids, ship, hitShip, null, this);
+    this.physics.add.collider(asteroids);
 
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -72,7 +71,7 @@ function create() {
 
     scoreText = this.add.text(16, 16, 'Score: ' + score, { fontsize: '40px', fill: '#FFFFFF' });
 
-    healthText = this.add.text(16, 32, 'Health: ' + health, { fontsize: '40px', fill: '#FFFFFF' });
+    livesText = this.add.text(16, 32, 'Lives: ' + lives, { fontsize: '40px', fill: '#FFFFFF' });
 
     /*
     //------------------Bullet firing code------------------
@@ -171,11 +170,25 @@ function update(time, delta) {
         ship.setAcceleration(0);
     }
 
-    if (health > 0) {
+    if (lives > 0) {
         score = score + 5;
         scoreText.setText('Score: ' + score);
     }
 
+    if (score % 10000 == 0) {
+        x = (ship.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+        y = (ship.y < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+        if (score >= 30000) {
+            newAsteroid1();
+        }
+        else if (score >= 50000){
+            newAsteroid1();
+            newAsteroid2
+        }
+        else {
+            newAsteroid2();
+        }
+    }
 
     /*
     if (isDown && time > lastFired)
@@ -192,23 +205,35 @@ function update(time, delta) {
     */
 }
 
-function hitShip (ship, asteroid1)
-{
-    this.physics.pause();
-
+function hitShip(ship, asteroid1) {
     ship.setTint(0xff0000);
 
+    lives = lives - 1;
+    livesText.setText('Lives: ' + lives);
+
     gameOver = true;
+
+    this.physics.pause();
+
 }
 
-function newAsteroid(){
-    if (score % 10000 == 0) {
-        var x = (ship.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+function newAsteroid1(ship, score) {
+    var asteroid1 = asteroids.create(x, y, 'asteroid1');
+    asteroid1.setBounce(1);
+    asteroid1.setCollideWorldBounds(true);
+    asteroid1.setVelocity(Phaser.Math.Between(-200, 200), 100);
+    asteroid1.setScale(2);
+    asteroid1.setSize(20, 20);
+    asteroid1.setOffset(5, 5); 
+}
 
-        var asteroid_first = asteroid1.create(x, 16, 'asteroid1');
-        asteroid_first.setBounce(1);
-        asteroid_first.setCollideWorldBounds(true);
-        asteroid_first.setVelocity(Phaser.Math.Between(-200, 200), 20);
-    }
+function newAsteroid2(ship, score) {
+    var asteroid2 = asteroids.create(x, y, 'asteroid2');
+    asteroid2.setBounce(1);
+    asteroid2.setCollideWorldBounds(true);
+    asteroid2.setVelocity(Phaser.Math.Between(-200, 200), 100);
+    asteroid2.setScale(2);
+    asteroid2.setCircle(13);
+    asteroid2.setOffset(3,3)
 }
 
