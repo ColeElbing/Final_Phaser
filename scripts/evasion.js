@@ -12,7 +12,7 @@ let config = {
     scene: {
         preload: preload,
         create: create,
-        update: update 
+        update: update
     }
 };
 
@@ -52,9 +52,9 @@ function create() {
     bg = this.add.image(400, 300, 'background');
     bg.setScale(2);
 
-    
+
     ship = this.physics.add.sprite(100, 450, 'ship1');
-    ship.setSize(20,20)
+    ship.setSize(20, 20)
     ship.setScale(2);
     ship.setDrag(100);
     ship.setAngularDrag(200);
@@ -107,12 +107,12 @@ function update(time, delta) {
         if (score >= 30000) {
             newAsteroid2();
         }
-        else if (score >= 50000){
+        else if (score >= 50000) {
             newAsteroid1();
             newAsteroid2();
         }
-        else if(score == 100000){
-            lives = 0;    
+        else if (score == 100000) {
+            lives = 0;
 
             gameOver = true;
 
@@ -149,16 +149,16 @@ function newAsteroid1(ship, score) {
     asteroid1.setVelocity(Phaser.Math.Between(-200, 200), 100);
     asteroid1.setScale(2);
     asteroid1.setSize(20, 20);
-    asteroid1.setOffset(5, 5); 
+    asteroid1.setOffset(5, 5);
 }
 
 function newAsteroid2(ship, score) {
     var asteroid2 = asteroids.create(x, y, 'asteroid2');
     asteroid2.setBounce(1);
     asteroid2.setCollideWorldBounds(true);
-    asteroid2.setVelocity(Phaser.Math.Between(-200, 200), 100);
+    asteroid2.setVelocity(Phaser.Math.Between(-300, 300), 100);
     asteroid2.setScale(2);
     asteroid2.setCircle(13);
-    asteroid2.setOffset(3,3)
+    asteroid2.setOffset(3, 3)
 }
 
