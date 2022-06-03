@@ -6,7 +6,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -179,14 +179,14 @@ function update(time, delta) {
         x = (ship.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         y = (ship.y < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         if (score >= 30000) {
-            newAsteroid1();
+            newAsteroid2();
         }
         else if (score >= 50000){
             newAsteroid1();
             newAsteroid2
         }
         else {
-            newAsteroid2();
+            newAsteroid1();
         }
     }
 
