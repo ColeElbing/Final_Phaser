@@ -44,6 +44,8 @@ function preload() {
     this.load.image('asteroid1', 'assets/asteroid1.png')
     this.load.image('asteroid2', 'assets/asteroid2.png')
     this.load.image('asteroid3', 'assets/asteroid3.png')
+    this.load.image('gameOver', 'assets/gameOver.png')
+    this.load.image('youWin', 'assets/youWin.png')
 }
 
 function create() {
@@ -183,11 +185,21 @@ function update(time, delta) {
         }
         else if (score >= 50000){
             newAsteroid1();
-            newAsteroid2
+            newAsteroid2();
+        }
+        else if(score == 100000){
+            lives = 0;    
+
+            gameOver = true;
+
+            bg = this.add.image(400, 300, 'youWin');
+
+            this.physics.pause();
         }
         else {
             newAsteroid1();
         }
+
     }
 
     /*
@@ -210,6 +222,9 @@ function hitShip(ship, asteroid1) {
 
     lives = lives - 1;
     livesText.setText('Lives: ' + lives);
+
+    bg = this.add.image(400, 300, 'gameOver');
+    bg.setScale(.25)
 
     gameOver = true;
 
